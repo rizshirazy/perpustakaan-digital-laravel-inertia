@@ -28,3 +28,4 @@ Route::middleware('auth')->group(function () {
 Route::get('testing', fn() => inertia('Testing'));
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
