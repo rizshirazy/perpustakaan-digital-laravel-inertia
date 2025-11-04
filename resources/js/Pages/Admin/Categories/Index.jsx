@@ -10,18 +10,27 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/Components/ui/alert-dialog';
-import { Avatar, AvatarFallback } from '@/Components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent } from '@/Components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AppLayout from '@/Layouts/AppLayout';
-import { Link } from '@inertiajs/react';
+import { flashMessage } from '@/lib/utils';
+import { Link, router } from '@inertiajs/react';
 import { IconCategory, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { toast } from 'sonner';
 
 export default function Index(props) {
-    const handleDelete = (id) => {
-        // Implement delete functionality here
-        console.log(`Delete category with id: ${id}`);
+    const onHandleDelete = (id) => {
+        router.delete(route('admin.categories.destroy', id), {
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: (success) => {
+                const flash = flashMessage(success);
+
+                if (flash) toast[flash.type](flash.message);
+            },
+        });
     };
 
     return (
@@ -60,11 +69,12 @@ export default function Index(props) {
                                     <TableCell>{category.name}</TableCell>
                                     <TableCell>{category.slug}</TableCell>
                                     <TableCell>
-                                        <Avatar src={category.cover} alt={category.name}>
+                                        <Avatar>
+                                            <AvatarImage src={category.cover} alt={category.name} />
                                             <AvatarFallback>{category.name.substring(0, 1)}</AvatarFallback>
                                         </Avatar>
                                     </TableCell>
-                                    <TableCell>{new Date(category.created_at).toLocaleDateString()}</TableCell>
+                                    <TableCell>{category.created_at}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
                                             <Button variant="blue" size="sm" asChild>
@@ -91,7 +101,7 @@ export default function Index(props) {
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(category.id)}>
+                                                        <AlertDialogAction onClick={() => onHandleDelete(category)}>
                                                             Hapus
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>

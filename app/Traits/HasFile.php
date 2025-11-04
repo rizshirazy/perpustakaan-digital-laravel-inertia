@@ -12,7 +12,7 @@ trait HasFile
     {
         if ($request->hasFile($column)) {
             $file = $request->file($column);
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '.' . $file->getClientOriginalExtension();
             return $file->storeAs($folder, $filename, 'public');
         }
         return null;
@@ -24,7 +24,9 @@ trait HasFile
             if ($model->$column) {
                 Storage::disk('public')->delete($model->$column);
             }
-            $thumbnail = $request->file($column);
+            $file = $request->file($column);
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $thumbnail = $file->storeAs($folder, $filename, 'public');
         } else {
             $thumbnail = $model->$column;
         }
