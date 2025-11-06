@@ -4,6 +4,11 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property string $name
+ * @property string|null $description
+ * @property \Illuminate\Http\UploadedFile|null $cover
+ */
 class CategoryRequest extends FormRequest
 {
     /**
