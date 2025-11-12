@@ -21,7 +21,7 @@ class PublisherController extends Controller
         $publishers = Publisher::query()
             ->select(['id', 'name', 'slug', 'address', 'email', 'logo', 'phone'])
             ->filter(request()->only(['search']))
-            ->sorting(request()->only(['name', 'slug', 'email', 'address', 'phone']))
+            ->sorting(request()->only(['field', 'direction']))
             ->paginate(request()->load ?? 10)
             ->withQueryString();
 

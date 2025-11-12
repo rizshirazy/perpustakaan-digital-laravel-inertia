@@ -75,7 +75,7 @@ export default function Create(props) {
 
                         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                             <div className="grid w-full items-center gap-1.5">
-                                <Label htmlFor="phone">Email</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
                                     name="email"
