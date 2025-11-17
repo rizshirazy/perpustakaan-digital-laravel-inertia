@@ -37,7 +37,7 @@ class Publisher extends Model
     public function scopeSorting(Builder $query, array $sorts): void
     {
         $query->when($sorts['field'] ?? null && $sorts['direction'] ?? null, function ($query) use ($sorts) {
-            $query->orderBy($sorts['fields'], $sorts['direction']);
+            $query->orderBy($sorts['field'], $sorts['direction']);
         });
     }
 }

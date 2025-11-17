@@ -59,22 +59,6 @@ export default function Register() {
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Username</Label>
-
-                                    <Input
-                                        id="username"
-                                        type="text"
-                                        name="username"
-                                        value={data.username}
-                                        className="mt-1 block w-full"
-                                        autoComplete="username"
-                                        onChange={onHandleChange}
-                                    />
-
-                                    {errors.username && <InputError message={errors.username} />}
-                                </div>
-
-                                <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
 
                                     <Input
