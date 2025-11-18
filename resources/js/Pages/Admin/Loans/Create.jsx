@@ -1,3 +1,4 @@
+import ComboBox from '@/Components/ComboBox';
 import HeaderTitle from '@/Components/HeaderTitle';
 import InputError from '@/Components/InputError';
 import { Button } from '@/Components/ui/button';
@@ -6,21 +7,18 @@ import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import AppLayout from '@/Layouts/AppLayout';
 import { flashMessage } from '@/lib/utils';
-import { useForm } from '@inertiajs/react';
-import { IconSettingsExclamation } from '@tabler/icons-react';
+import { Link, useForm } from '@inertiajs/react';
+import { IconArrowLeft, IconCreditCardPay } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
 export default function Create(props) {
     const { data, setData, reset, post, processing, errors } = useForm({
-        late_fee_per_day: props.fine_setting?.late_fee_per_day || 0,
-        damage_fee_percentage: props.fine_settingdamage_fee_percentage || 0,
-        lost_fee_percentage: props.fine_settinglost_fee_percentage || 0,
+        user_id: '',
+        book_id: '',
+        loan_date: props.page_data.loan_date,
+        due_date: props.page_data.due_date,
         _method: props.page_settings.method,
     });
-
-    const onHandleChange = (event) => {
-        setData(event.target.name, event.target.type === 'file' ? event.target.files[0] : event.target.value);
-    };
 
     const onHandleSubmit = (e) => {
         e.preventDefault();
@@ -42,47 +40,53 @@ export default function Create(props) {
                 <HeaderTitle
                     title={props.page_settings.title}
                     subtitle={props.page_settings.subtitle}
-                    icon={IconSettingsExclamation}
+                    icon={IconCreditCardPay}
                 />
+
+                <Button variant="outline" size="lg" asChild>
+                    <Link href={route('admin.loans.index')}>
+                        <IconArrowLeft size="4" /> Kembali
+                    </Link>
+                </Button>
             </div>
 
             <Card>
                 <CardContent className="p-6">
                     <form onSubmit={onHandleSubmit} className="space-y-6">
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="late_fee_per_day">Denda Keterlambatan</Label>
-                            <Input
-                                id="late_fee_per_day"
-                                name="late_fee_per_day"
-                                type="number"
-                                value={data.late_fee_per_day}
-                                onChange={onHandleChange}
+                            <Label htmlFor="book_id">Buku</Label>
+                            <ComboBox
+                                items={props.page_data.books}
+                                selectedItem={data.book_id}
+                                onSelect={(currentValue) => setData('book_id', currentValue)}
+                                placeholder="Pilih Buku"
                             />
-                            {errors.late_fee_per_day && <InputError message={errors.late_fee_per_day} />}
+
+                            {errors.book_id && <InputError message={errors.book_id} />}
                         </div>
 
                         <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="damage_fee_percentage">Denda Kerusakan (%)</Label>
-                            <Input
-                                id="damage_fee_percentage"
-                                name="damage_fee_percentage"
-                                type="number"
-                                value={data.damage_fee_percentage}
-                                onChange={onHandleChange}
+                            <Label htmlFor="user_id">Pengguna</Label>
+                            <ComboBox
+                                items={props.page_data.users}
+                                selectedItem={data.user_id}
+                                onSelect={(currentValue) => setData('user_id', currentValue)}
+                                placeholder="Pilih Pengguna"
                             />
-                            {errors.damage_fee_percentage && <InputError message={errors.damage_fee_percentage} />}
+
+                            {errors.user_id && <InputError message={errors.user_id} />}
                         </div>
 
-                        <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="lost_fee_percentage">Denda Hilang (%)</Label>
-                            <Input
-                                id="lost_fee_percentage"
-                                name="lost_fee_percentage"
-                                type="number"
-                                value={data.lost_fee_percentage}
-                                onChange={onHandleChange}
-                            />
-                            {errors.lost_fee_percentage && <InputError message={errors.lost_fee_percentage} />}
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="loan_date">Tanggal Peminjaman</Label>
+                                <Input id="loan_date" value={data.loan_date} disabled />
+                            </div>
+
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="due_date">Batas Waktu Pengembalian</Label>
+                                <Input id="due_date" value={data.due_date} disabled />
+                            </div>
                         </div>
 
                         <div className="flex justify-end gap-x-2">

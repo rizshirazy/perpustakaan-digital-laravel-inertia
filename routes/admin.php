@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineSettingController;
+use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -18,4 +19,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::get('/update', 'edit')->name('edit');
         Route::put('/update', 'update')->name('update');
     });
+
+    Route::resource('loans', LoanController::class)->names('loans');
 });

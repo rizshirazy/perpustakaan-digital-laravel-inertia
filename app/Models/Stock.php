@@ -16,6 +16,14 @@ class Stock extends Model
         'damaged',
     ];
 
+    protected $casts = [
+        'total'     => 'integer',
+        'available' => 'integer',
+        'loaned'    => 'integer',
+        'lost'      => 'integer',
+        'damaged'   => 'integer',
+    ];
+
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
