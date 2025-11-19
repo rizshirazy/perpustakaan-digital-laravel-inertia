@@ -19,8 +19,8 @@ class LoanResource extends JsonResource
                 ->whereHas('stock', fn($q) => $q->where('available', '>', 0))
                 ->get()
                 ->map(fn($item) => [
-                    'value' => (string) $item->id,
-                    'label' => $item->title
+                    'value'     => (string) $item->id,
+                    'label'     => $item->title,
                 ]),
             'users' => User::select(['id', 'name'])
                 ->get()
@@ -37,22 +37,34 @@ class LoanResource extends JsonResource
             'id'              => $this->id,
             'loan_code'       => $this->loan_code,
             'loan_date'       => [
-                'raw'       => $this->loan_date,
+                'raw'       => $this->loan_date->toDateString(),
                 'formatted' => $this->loan_date->isoFormat('DD MMM YYYY')
             ],
             'due_date'        => [
-                'raw'       => $this->due_date,
+                'raw'       => $this->due_date->toDateString(),
                 'formatted' => $this->due_date->isoFormat('DD MMM YYYY')
             ],
             'has_return_book' => $this->returnBook()->exists(),
             'user'            => $this->whenLoaded('user', [
-                'id'   => $this->user?->id,
-                'name' => $this->user?->name,
+                'id'       => $this->user?->id,
+                'name'     => $this->user?->name,
+                'username' => $this->user?->username,
+                'email'    => $this->user?->email,
+                'phone'    => $this->user?->phone,
             ]),
             'book'            => $this->whenLoaded('book', [
-                'id'    => $this->book?->id,
-                'title' => $this->book?->title,
-                'slug'  => $this->book?->slug,
+                'id'        => $this->book?->id,
+                'title'     => $this->book?->title,
+                'slug'      => $this->book?->slug,
+                'book_code' => $this->book?->book_code,
+                'author'    => $this->book?->author,
+                'publisher' => $this->when(
+                    $this->book && $this->book->relationLoaded('publisher'),
+                    fn() => [
+                        'id'   => $this->book->publisher?->id,
+                        'name' => $this->book->publisher?->name,
+                    ]
+                ),
             ]),
         ];
     }

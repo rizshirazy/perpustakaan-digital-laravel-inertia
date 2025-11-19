@@ -18,28 +18,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { useFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { flashMessage } from '@/lib/utils';
-import { Link, router } from '@inertiajs/react';
-import {
-    IconArrowsUpDown,
-    IconCreditCardPay,
-    IconCreditCardRefund,
-    IconPencil,
-    IconPlus,
-    IconRefresh,
-    IconTrash,
-} from '@tabler/icons-react';
+import { flashMessage, formatToRupiah } from '@/lib/utils';
+import { router } from '@inertiajs/react';
+import { IconArrowsUpDown, IconCreditCardRefund, IconRefresh, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function Index(props) {
-    const { data: loans, meta } = props.loans;
+    const { data: return_books, meta } = props.return_books;
     const [params, setParams] = useState(props.state);
 
     useFilter({
-        route: route('admin.loans.index'),
+        route: route('admin.return-books.index'),
         values: params,
-        only: ['loans'],
+        only: ['return_books'],
     });
 
     const onSortable = (field) => {
@@ -47,7 +39,7 @@ export default function Index(props) {
     };
 
     const onHandleDelete = (id) => {
-        router.delete(route('admin.loans.destroy', id), {
+        router.delete(route('admin.return_books.destroy', id), {
             preserveScroll: true,
             preserveState: true,
             onSuccess: (success) => {
@@ -64,14 +56,14 @@ export default function Index(props) {
                 <HeaderTitle
                     title={props.page_settings.title}
                     subtitle={props.page_settings.subtitle}
-                    icon={IconCreditCardPay}
+                    icon={IconCreditCardRefund}
                 />
 
-                <Button variant="orange" size="lg" asChild>
-                    <Link href={route('admin.loans.create')}>
+                {/* <Button variant="orange" size="lg" asChild>
+                    <Link href={route('admin.return-books.create')}>
                         <IconPlus className="size-4" /> Tambah
                     </Link>
-                </Button>
+                </Button> */}
             </div>
 
             <Card>
@@ -120,7 +112,19 @@ export default function Index(props) {
                                     <Button
                                         variant="ghost"
                                         className="group inline-flex"
-                                        onClick={() => onSortable('loan_code')}
+                                        onClick={() => onSortable('return_code')}
+                                    >
+                                        Kode Pengembalian
+                                        <span className="ml-2 flex-none rounded text-muted-foreground">
+                                            <IconArrowsUpDown size={4} />
+                                        </span>
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="w-48">
+                                    <Button
+                                        variant="ghost"
+                                        className="group inline-flex"
+                                        onClick={() => onSortable('loan_id')}
                                     >
                                         Kode Peminjaman
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
@@ -134,7 +138,7 @@ export default function Index(props) {
                                         className="group inline-flex"
                                         onClick={() => onSortable('user_id')}
                                     >
-                                        Nama
+                                        Nama Pengguna
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
                                             <IconArrowsUpDown size={4} />
                                         </span>
@@ -146,19 +150,7 @@ export default function Index(props) {
                                         className="group inline-flex"
                                         onClick={() => onSortable('book_id')}
                                     >
-                                        Buku
-                                        <span className="ml-2 flex-none rounded text-muted-foreground">
-                                            <IconArrowsUpDown size={4} />
-                                        </span>
-                                    </Button>
-                                </TableHead>
-                                <TableHead className="min-w-42">
-                                    <Button
-                                        variant="ghost"
-                                        className="group inline-flex"
-                                        onClick={() => onSortable('loan_date')}
-                                    >
-                                        Tanggal Peminjaman
+                                        Judul Buku
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
                                             <IconArrowsUpDown size={4} />
                                         </span>
@@ -176,32 +168,54 @@ export default function Index(props) {
                                         </span>
                                     </Button>
                                 </TableHead>
+                                <TableHead className="min-w-42">
+                                    <Button
+                                        variant="ghost"
+                                        className="group inline-flex"
+                                        onClick={() => onSortable('return_date')}
+                                    >
+                                        Tanggal Pengembalian
+                                        <span className="ml-2 flex-none rounded text-muted-foreground">
+                                            <IconArrowsUpDown size={4} />
+                                        </span>
+                                    </Button>
+                                </TableHead>
+                                <TableHead className="min-w-42">
+                                    <Button
+                                        variant="ghost"
+                                        className="group inline-flex"
+                                        onClick={() => onSortable('status')}
+                                    >
+                                        Status
+                                        <span className="ml-2 flex-none rounded text-muted-foreground">
+                                            <IconArrowsUpDown size={4} />
+                                        </span>
+                                    </Button>
+                                </TableHead>
+                                <TableHead>Kondisi</TableHead>
+                                <TableHead>Denda</TableHead>
                                 <TableHead className="w-28">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {loans.map((loan, index) => (
+                            {return_books.map((return_book, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
-                                    <TableCell>{loan.loan_code}</TableCell>
-                                    <TableCell className="whitespace-normal break-words">{loan.user.name}</TableCell>
-                                    <TableCell className="whitespace-normal break-words">{loan.book.title}</TableCell>
-                                    <TableCell>{loan.loan_date.formatted}</TableCell>
-                                    <TableCell>{loan.due_date.formatted}</TableCell>
+                                    <TableCell>{return_book.return_code}</TableCell>
+                                    <TableCell>{return_book.loan.loan_code}</TableCell>
+                                    <TableCell className="whitespace-normal break-words">
+                                        {return_book.user.name}
+                                    </TableCell>
+                                    <TableCell className="whitespace-normal break-words">
+                                        {return_book.book.title}
+                                    </TableCell>
+                                    <TableCell>{return_book.loan.due_date.formatted}</TableCell>
+                                    <TableCell>{return_book.return_date.formatted}</TableCell>
+                                    <TableCell>{return_book.status.label}</TableCell>
+                                    <TableCell>{return_book.return_book_check.condition.label}</TableCell>
+                                    <TableCell className="text-red-500">{formatToRupiah(return_book.fine)}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
-                                            {!loan.has_return_book && (
-                                                <Button variant="purple" size="sm" asChild>
-                                                    <Link href={route('admin.return-books.create', [loan.loan_code])}>
-                                                        <IconCreditCardRefund size="4" />
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                            <Button variant="blue" size="sm" asChild>
-                                                <Link href={route('admin.loans.edit', [loan])}>
-                                                    <IconPencil size="4" />
-                                                </Link>
-                                            </Button>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
                                                     <Button variant="red" size="sm">
@@ -211,18 +225,18 @@ export default function Index(props) {
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>
-                                                            Apakah anda yakin menghapus transaksi peminjaman{' '}
-                                                            {loan.loan_code}?
+                                                            Apakah anda yakin menghapus transaksi pengembalian{' '}
+                                                            {return_book.return_code}?
                                                         </AlertDialogTitle>
                                                         <AlertDialogDescription>
                                                             Tindakan ini tidak dapat dibatalkan dan akan menghapus
-                                                            transaksi peminjaman beserta seluruh data yang berhubungan
-                                                            dengan transaksi peminjaman ini.
+                                                            transaksi pengembalian beserta seluruh data yang berhubungan
+                                                            dengan transaksi pengembalian ini.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => onHandleDelete(loan)}>
+                                                        <AlertDialogAction onClick={() => onHandleDelete(return_book)}>
                                                             Hapus
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
@@ -241,7 +255,7 @@ export default function Index(props) {
                         <span className="font-medium text-orange-500">
                             {meta.from && meta.to ? meta.to - meta.from + 1 : 0}{' '}
                         </span>{' '}
-                        dari {meta.total} peminjaman
+                        dari {meta.total} pengembalian
                     </p>
                     <div className="overflow-x-auto">
                         {meta.has_pages && (
