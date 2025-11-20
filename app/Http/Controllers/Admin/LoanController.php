@@ -127,7 +127,7 @@ class LoanController extends Controller
      */
     public function edit(Loan $loan)
     {
-        $loan->load(['book', 'user']);
+        $loan->load(['book.publisher', 'book.category', 'book.stock', 'user']);
 
         return inertia('Admin/Loans/Edit', [
             'page_settings' => [

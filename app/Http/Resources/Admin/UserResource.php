@@ -25,7 +25,7 @@ class UserResource extends JsonResource
         $dateOfBirth = optional($this->date_of_birth);
 
         return [
-            'id'            => $this->id,
+            'id'            => (string) $this->id,
             'name'          => $this->name,
             'username'      => $this->username,
             'email'         => $this->email,

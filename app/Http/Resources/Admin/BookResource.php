@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Admin;
 
 use App\Enums\BookLanguage;
-use App\Enums\BookStatus;
 use App\Models\Category;
 use App\Models\Publisher;
 use App\Traits\HasOptions;
@@ -36,11 +35,10 @@ class BookResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'               => $this->id,
+            'id'               => (string) $this->id,
             'book_code'        => $this->book_code,
             'title'            => $this->title,
             'slug'             => $this->slug,
-            'book_code'        => $this->book_code,
             'author'           => $this->author,
             'publication_year' => (string) $this->publication_year,
             'isbn'             => $this->isbn,
@@ -54,21 +52,15 @@ class BookResource extends JsonResource
             'cover'            => $this->cover ? Storage::url($this->cover) : null,
             'price'            => number_format($this->price, 0, ",", "."),
             'created_at'       => Carbon::parse($this->created_at)->isoFormat('D MMM YYYY'),
-            'category'         => [
-                'id'   => (string) $this->category_id,
-                'name' => $this->category?->name,
-            ],
-            'publisher'        => [
-                'id'   => (string) $this->publisher_id,
-                'name' => $this->publisher?->name,
-            ],
-            'stock'            => [
+            'category'         => CategoryResource::make($this->whenLoaded('category')),
+            'publisher'        => PublisherResource::make($this->whenLoaded('publisher')),
+            'stock'            => $this->whenLoaded('stock', [
                 'total'     => $this->stock?->total,
                 'available' => $this->stock?->available,
                 'loaned'    => $this->stock?->loaned,
                 'lost'      => $this->stock?->lost,
                 'damaged'   => $this->stock?->damaged,
-            ]
+            ])
         ];
     }
 }

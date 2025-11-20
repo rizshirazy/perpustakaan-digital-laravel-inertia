@@ -34,7 +34,7 @@ class LoanResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'              => $this->id,
+            'id'              => (string) $this->id,
             'loan_code'       => $this->loan_code,
             'loan_date'       => [
                 'raw'       => $this->loan_date->toDateString(),
@@ -45,27 +45,8 @@ class LoanResource extends JsonResource
                 'formatted' => $this->due_date->isoFormat('DD MMM YYYY')
             ],
             'has_return_book' => $this->returnBook()->exists(),
-            'user'            => $this->whenLoaded('user', [
-                'id'       => $this->user?->id,
-                'name'     => $this->user?->name,
-                'username' => $this->user?->username,
-                'email'    => $this->user?->email,
-                'phone'    => $this->user?->phone,
-            ]),
-            'book'            => $this->whenLoaded('book', [
-                'id'        => $this->book?->id,
-                'title'     => $this->book?->title,
-                'slug'      => $this->book?->slug,
-                'book_code' => $this->book?->book_code,
-                'author'    => $this->book?->author,
-                'publisher' => $this->when(
-                    $this->book && $this->book->relationLoaded('publisher'),
-                    fn() => [
-                        'id'   => $this->book->publisher?->id,
-                        'name' => $this->book->publisher?->name,
-                    ]
-                ),
-            ]),
+            'user'            => UserResource::make($this->whenLoaded('user')),
+            'book'            => BookResource::make($this->whenLoaded('book')),
         ];
     }
 }

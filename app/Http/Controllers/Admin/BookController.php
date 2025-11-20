@@ -149,6 +149,8 @@ class BookController extends Controller
      */
     public function edit(Book $book): Response
     {
+        $book->load(['category', 'publisher', 'stock']);
+
         return inertia('Admin/Books/Edit', [
             'page_settings' => [
                 'title'    => 'Edit Buku',
