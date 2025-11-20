@@ -1,15 +1,4 @@
 import HeaderTitle from '@/Components/HeaderTitle';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/Components/ui/alert-dialog';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
@@ -19,8 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
 import { flashMessage, formatToRupiah } from '@/lib/utils';
-import { router } from '@inertiajs/react';
-import { IconArrowsUpDown, IconCreditCardRefund, IconRefresh, IconTrash } from '@tabler/icons-react';
+import { Link, router } from '@inertiajs/react';
+import { IconArrowsUpDown, IconCreditCardRefund, IconMoneybagMove, IconRefresh } from '@tabler/icons-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -213,35 +202,16 @@ export default function Index(props) {
                                     <TableCell>{return_book.return_date.formatted}</TableCell>
                                     <TableCell>{return_book.status.label}</TableCell>
                                     <TableCell>{return_book.return_book_check.condition.label}</TableCell>
-                                    <TableCell className="text-red-500">{formatToRupiah(return_book.fine)}</TableCell>
+                                    <TableCell className="text-red-500">
+                                        {return_book.fine ? formatToRupiah(return_book.fine.total_fee) : '-'}
+                                    </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="red" size="sm">
-                                                        <IconTrash size="4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                            Apakah anda yakin menghapus transaksi pengembalian{' '}
-                                                            {return_book.return_code}?
-                                                        </AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            Tindakan ini tidak dapat dibatalkan dan akan menghapus
-                                                            transaksi pengembalian beserta seluruh data yang berhubungan
-                                                            dengan transaksi pengembalian ini.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => onHandleDelete(return_book)}>
-                                                            Hapus
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
+                                            <Button variant="blue" size="sm" asChild>
+                                                <Link href={route('admin.fines.show', return_book.return_code)}>
+                                                    <IconMoneybagMove size="4" />
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </TableCell>
                                 </TableRow>

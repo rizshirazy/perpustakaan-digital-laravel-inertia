@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\PublisherController;
@@ -28,5 +29,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         Route::get('/{loan:loan_code}/create', 'create')->name('create');
         Route::post('/{loan:loan_code}/create', 'store')->name('store');
         Route::put('/{returnBook:return_book_code}/approve', 'approve')->name('approve');
+    });
+
+    Route::controller(FineController::class)->prefix('fines')->name('fines.')->group(function () {
+        Route::get('/fines/{returnBook:return_code}', 'show')->name('show');
     });
 });
