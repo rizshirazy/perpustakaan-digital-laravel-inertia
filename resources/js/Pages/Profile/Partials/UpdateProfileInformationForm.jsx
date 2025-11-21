@@ -1,7 +1,9 @@
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
+import { Button } from '@/Components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 
@@ -13,91 +15,92 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
         email: user.email,
     });
 
-    const submit = (e) => {
+    const onHandleChange = (event) => {
+        setData(event.target.name, event.target.type === 'file' ? event.target.files[0] : event.target.value);
+    };
+
+    const onHandleSubmit = (e) => {
         e.preventDefault();
 
         patch(route('profile.update'));
     };
 
     return (
-        <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
+        <Card className={className}>
+            <CardHeader>
+                <CardTitle className="text-lg font-medium text-gray-900">Informasi Profil</CardTitle>
 
-                <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
-                </p>
-            </header>
+                <CardDescription className="mt-1 text-sm text-muted-foreground">
+                    Perbarui informasi profil dan alamat email akun Anda.
+                </CardDescription>
+            </CardHeader>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+            <CardContent>
+                <form onSubmit={onHandleSubmit} className="space-y-6">
+                    <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="name">Nama</Label>
 
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="name"
-                    />
+                        <Input id="name" name="name" value={data.name} onChange={onHandleChange} autoComplete="name" />
 
-                    <InputError className="mt-2" message={errors.name} />
-                </div>
-
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        className="mt-1 block w-full"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                        autoComplete="username"
-                    />
-
-                    <InputError className="mt-2" message={errors.email} />
-                </div>
-
-                {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="mt-2 text-sm text-gray-800">
-                            Your email address is unverified.
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                Click here to re-send the verification email.
-                            </Link>
-                        </p>
-
-                        {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-green-600">
-                                A new verification link has been sent to your email address.
-                            </div>
-                        )}
+                        {errors.name && <InputError className="mt-2" message={errors.name} />}
                     </div>
-                )}
 
-                <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Save</PrimaryButton>
+                    <div className="grid w-full items-center gap-1.5">
+                        <Label htmlFor="email">Email</Label>
 
-                    <Transition
-                        show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">Saved.</p>
-                    </Transition>
-                </div>
-            </form>
-        </section>
+                        <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={data.email}
+                            onChange={onHandleChange}
+                            autoComplete="username"
+                        />
+
+                        {errors.email && <InputError className="mt-2" message={errors.email} />}
+                    </div>
+
+                    {mustVerifyEmail && user.email_verified_at === null && (
+                        <div className="grid w-full items-center gap-1.5">
+                            <p className="mt-2 text-sm text-foreground">
+                                Alamat email Anda belum terverifikasi.
+                                <Link
+                                    href={route('verification.send')}
+                                    method="post"
+                                    as="button"
+                                    className="rounded-md text-sm text-muted-foreground underline hover:text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                >
+                                    Klik di sini untuk mengirim ulang email verifikasi.
+                                </Link>
+                            </p>
+
+                            {status === 'verification-link-sent' && (
+                                <Alert variant="success">
+                                    <AlertDescription>
+                                        Tautan verifikasi baru telah dikirim ke alamat email Anda.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="flex items-center gap-4">
+                        <Button variant="orange" size="lg" disabled={processing}>
+                            Simpan
+                        </Button>
+
+                        <Transition
+                            show={recentlySuccessful}
+                            enter="transition ease-in-out"
+                            enterFrom="opacity-0"
+                            leave="transition ease-in-out"
+                            leaveTo="opacity-0"
+                        >
+                            <p className="text-sm text-muted-foreground">Tersimpan.</p>
+                        </Transition>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     );
 }
