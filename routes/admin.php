@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineController;
@@ -32,6 +33,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     });
 
     Route::controller(FineController::class)->prefix('fines')->name('fines.')->group(function () {
-        Route::get('/fines/{returnBook:return_code}', 'show')->name('show');
+        Route::get('/{returnBook:return_code}', 'show')->name('show');
     });
+
+    Route::resource('announcements', AnnouncementController::class)->names('announcements');
 });
