@@ -135,7 +135,7 @@ export default function Index(props) {
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
                                             <Button variant="blue" size="sm" asChild>
-                                                <Link href={route('admin.roles.edit', { role: role.id })}>
+                                                <Link href={route('admin.roles.edit', role)}>
                                                     <IconPencil size="4" />
                                                 </Link>
                                             </Button>
@@ -157,7 +157,7 @@ export default function Index(props) {
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => onHandleDelete(role.id)}>
+                                                        <AlertDialogAction onClick={() => onHandleDelete(role)}>
                                                             Hapus
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
