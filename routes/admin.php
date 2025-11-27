@@ -41,4 +41,14 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('announcements', AnnouncementController::class)->names('announcements');
     Route::resource('roles', RoleController::class)->names('roles');
     Route::resource('permissions', PermissionController::class)->names('permissions');
+
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('assign-permissions/', 'indexAssignPermission')->name('assign-permissions.index');
+        Route::get('assign-permissions/{role}', 'editAssignPermission')->name('assign-permissions.edit');
+        Route::put('assign-permissions/{role}', 'updateAssignPermission')->name('assign-permissions.update');
+
+        Route::get('assign-users/', 'indexAssignUser')->name('assign-users.index');
+        Route::get('assign-users/{user}', 'editAssignUser')->name('assign-users.edit');
+        Route::put('assign-users/{user}', 'updateAssignUser')->name('assign-users.update');
+    });
 });
