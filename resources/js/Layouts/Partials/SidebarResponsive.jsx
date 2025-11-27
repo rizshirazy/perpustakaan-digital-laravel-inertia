@@ -94,7 +94,12 @@ export default function SidebarResponsive({ url, auth }) {
                             title="Peran"
                             icon={IconCircleKey}
                         />
-                        <NavLinkResponsive url="#" title="Izin" icon={IconVersions} />
+                        <NavLinkResponsive
+                            url={route('admin.permissions.index')}
+                            active={url.startsWith('/admin/permissions')}
+                            title="Izin"
+                            icon={IconVersions}
+                        />
                         <NavLinkResponsive url="#" title="Tetapkan Peran" icon={IconLayoutKanban} />
                         <NavLinkResponsive url="#" title="Tetapkan Izin" icon={IconKeyframe} />
                         <NavLinkResponsive url="#" title="Akses Rute" icon={IconRoute} />

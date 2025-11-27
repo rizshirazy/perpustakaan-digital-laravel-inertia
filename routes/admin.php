@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\ReturnBookController;
 use App\Http\Controllers\Admin\RoleController;
@@ -39,4 +40,5 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::resource('announcements', AnnouncementController::class)->names('announcements');
     Route::resource('roles', RoleController::class)->names('roles');
+    Route::resource('permissions', PermissionController::class)->names('permissions');
 });
