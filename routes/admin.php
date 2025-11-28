@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\ReturnBookController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\RouteAccessController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\RouteAccess;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -41,6 +43,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('announcements', AnnouncementController::class)->names('announcements');
     Route::resource('roles', RoleController::class)->names('roles');
     Route::resource('permissions', PermissionController::class)->names('permissions');
+    Route::resource('route-accesses', RouteAccessController::class)->names('route-accesses');
 
     Route::controller(RoleController::class)->group(function () {
         Route::get('assign-permissions/', 'indexAssignPermission')->name('assign-permissions.index');
