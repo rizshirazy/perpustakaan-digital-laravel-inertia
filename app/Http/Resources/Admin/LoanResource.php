@@ -23,6 +23,7 @@ class LoanResource extends JsonResource
                     'label'     => $item->title,
                 ]),
             'users' => User::select(['id', 'name'])
+                ->whereHas('roles', fn($q) => $q->where('name', 'member'))
                 ->get()
                 ->map(fn($item) => [
                     'value' => (string) $item->id,

@@ -123,4 +123,22 @@ class Book extends Model
     {
         return $this->updateStock('loaned', 'lost');
     }
+
+    public static function leastLoanedBooks(int $limit = 5)
+    {
+        return self::select(['id', 'title', 'author'])
+            ->withCount('loans')
+            ->orderBy('loans_count', 'asc')
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function mostLoanedBooks(int $limit = 5)
+    {
+        return self::select(['id', 'title', 'author'])
+            ->withCount('loans')
+            ->orderBy('loans_count', 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
+use App\Http\Controllers\Admin\LoanStatisticController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PublisherController;
 use App\Http\Controllers\Admin\ReturnBookController;
@@ -16,6 +17,10 @@ use App\Models\RouteAccess;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::controller(LoanStatisticController::class)->prefix('loan-statistics')->name('loan-statistics.')->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
 
     Route::resource('categories', CategoryController::class)->names('categories');
     Route::resource('publishers', PublisherController::class)->names('publishers');

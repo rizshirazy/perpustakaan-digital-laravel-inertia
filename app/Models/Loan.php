@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,5 +65,17 @@ class Loan extends Model
         $query->when($sorts['field'] ?? null && $sorts['direction'] ?? null, function ($query) use ($sorts) {
             $query->orderBy($sorts['field'], $sorts['direction']);
         });
+    }
+
+    public static function totalLoanBooks(): array
+    {
+        return [
+            'days'   => self::whereDate('loan_date', Carbon::now()->toDateString())->count(),
+            'weeks'  => self::whereBetween('loan_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
+            'months' => self::whereMonth('loan_date', Carbon::now()->month)
+                ->whereYear('loan_date', Carbon::now()->year)->count(),
+            'years'  => self::whereYear('loan_date', Carbon::now()->year)->count(),
+
+        ];
     }
 }
