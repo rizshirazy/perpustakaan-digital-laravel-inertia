@@ -50,7 +50,6 @@ export default function Create(props) {
                     subtitle={props.page_settings.subtitle}
                     icon={IconCreditCardRefund}
                 />
-                {console.log(props.page_data.data.book.publisher)}
 
                 <Button variant="outline" size="lg" asChild>
                     <Link href={route('admin.return-books.index')}>

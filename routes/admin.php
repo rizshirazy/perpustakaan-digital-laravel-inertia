@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineController;
+use App\Http\Controllers\Admin\FineReportController;
 use App\Http\Controllers\Admin\FineSettingController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\LoanStatisticController;
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::controller(LoanStatisticController::class)->prefix('loan-statistics')->name('loan-statistics.')->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
+
+    Route::controller(FineReportController::class)->prefix('fine-reports')->name('fine-reports.')->group(function () {
         Route::get('/', 'index')->name('index');
     });
 
