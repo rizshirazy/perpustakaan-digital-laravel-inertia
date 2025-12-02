@@ -56,9 +56,13 @@ export default function AppLayout({ title, children }) {
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href="#">Logout</Link>
+                                    <Link href={route('profile.edit')}>Profile</Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link href={route('logout')} method="post">
+                                        Logout
+                                    </Link>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

@@ -106,4 +106,29 @@ class ReturnBook extends Model
     {
         return max(0, Carbon::parse($this->loan->due_date)->diffInDays(Carbon::parse($this->return_date)));
     }
+
+    public static function recentForUser($user, int $limit = 5)
+    {
+        $query = self::select('id', 'return_code', 'book_id')
+            ->with(['book:id,title'])
+            ->latest('created_at')
+            ->limit($limit);
+
+        if (! $user->hasAnyRole(['admin', 'operator'])) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->get();
+    }
+
+    public static function countForUser($user): int
+    {
+        $query = self::query();
+
+        if (! $user->hasAnyRole(['admin', 'operator'])) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->count();
+    }
 }

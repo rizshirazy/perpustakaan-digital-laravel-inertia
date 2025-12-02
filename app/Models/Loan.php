@@ -78,4 +78,29 @@ class Loan extends Model
 
         ];
     }
+
+    public static function recentForUser($user, int $limit = 5)
+    {
+        $query = self::select('id', 'loan_code', 'book_id')
+            ->with(['book:id,title'])
+            ->latest('created_at')
+            ->limit($limit);
+
+        if (! $user->hasAnyRole(['admin', 'operator'])) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->get();
+    }
+
+    public static function countForUser($user): int
+    {
+        $query = self::query();
+
+        if (! $user->hasAnyRole(['admin', 'operator'])) {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->count();
+    }
 }
