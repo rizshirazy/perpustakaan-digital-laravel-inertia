@@ -11,7 +11,7 @@ import { Link, useForm } from '@inertiajs/react';
 import { IconArrowLeft, IconCategory } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-export default function Create(props) {
+export default function Edit(props) {
     const { name, description } = props.category;
 
     const { data, setData, reset, post, processing, errors } = useForm({
@@ -104,4 +104,4 @@ export default function Create(props) {
     );
 }
 
-Create.layout = (page) => <AppLayout title={page.props.page_settings.title}>{page}</AppLayout>;
+Edit.layout = (page) => <AppLayout title={page.props.page_settings.title}>{page}</AppLayout>;

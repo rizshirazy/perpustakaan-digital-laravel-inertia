@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\BookStockReportController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FineController;
 use App\Http\Controllers\Admin\FineReportController;
@@ -25,6 +26,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::controller(FineReportController::class)->prefix('fine-reports')->name('fine-reports.')->group(function () {
         Route::get('/', 'index')->name('index');
+    });
+
+    Route::controller(BookStockReportController::class)->prefix('book-stock-reports')->name('book-stock-reports.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{stock}', 'edit')->name('edit');
+        Route::put('/{stock}', 'update')->name('update');
     });
 
     Route::resource('categories', CategoryController::class)->names('categories');
