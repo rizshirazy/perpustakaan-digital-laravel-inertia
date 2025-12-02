@@ -43,6 +43,8 @@ class RegisteredUserController extends Controller
             'username' => usernameGenerator($request->username),
         ]);
 
+        $user->assignRole('member');
+
         event(new Registered($user));
 
         Auth::login($user);
