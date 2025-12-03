@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { useFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { flashMessage } from '@/lib/utils';
+import { flashMessage, formatToRupiah } from '@/lib/utils';
 import { Link, router } from '@inertiajs/react';
 import { IconArrowsUpDown, IconBooks, IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -170,7 +170,7 @@ export default function Index(props) {
                                         </span>
                                     </Button>
                                 </TableHead>
-                                <TableHead className="min-w-36">Dibuat Pada</TableHead>
+                                <TableHead>Harga</TableHead>
                                 <TableHead>Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -185,7 +185,7 @@ export default function Index(props) {
                                     <TableCell>{book.publication_year}</TableCell>
                                     <TableCell>{book.isbn}</TableCell>
                                     <TableCell>{book.language.label}</TableCell>
-                                    <TableCell>{book.created_at}</TableCell>
+                                    <TableCell>{formatToRupiah(book.price)}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
                                             <Button variant="blue" size="sm" asChild>

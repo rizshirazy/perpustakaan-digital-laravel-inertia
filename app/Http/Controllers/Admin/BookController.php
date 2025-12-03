@@ -116,12 +116,17 @@ class BookController extends Controller
             return to_route('admin.books.index');
         }
     }
-
     private function bookCode(int $publication_year, int $category_id): string
     {
         $category = Category::find($category_id);
 
-        $last_book = Book::query()->orderByDesc('id')->first();
+        $cat = str(substr(preg_replace('/[^A-Za-z]/', '', $category->name), 0, 5))->upper();
+        $book_code_prefix = 'CA' . $publication_year . '.' . $cat . '.';
+
+        $last_book = Book::query()
+            ->where('book_code', 'like', $book_code_prefix . '%')
+            ->orderByRaw("CAST((regexp_matches(book_code, '\d{4}$'))[1] AS INTEGER) DESC")
+            ->first();
 
         $order = 1;
 
@@ -131,9 +136,8 @@ class BookController extends Controller
         }
 
         $ordering = str_pad($order, 4, '0', STR_PAD_LEFT);
-        $cat = str(substr($category->name, 0, 4))->upper();
 
-        return 'CA' . $publication_year . '.' . $cat . '.' . $ordering;
+        return $book_code_prefix . $ordering;
     }
 
     /**

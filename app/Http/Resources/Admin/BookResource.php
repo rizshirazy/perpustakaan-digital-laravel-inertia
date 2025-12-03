@@ -50,7 +50,7 @@ class BookResource extends JsonResource
             'number_of_pages'  => $this->number_of_pages,
             'status'           => $this->status,
             'cover'            => $this->cover ? Storage::url($this->cover) : null,
-            'price'            => number_format($this->price, 0, ",", "."),
+            'price'            => $this->price,
             'created_at'       => Carbon::parse($this->created_at)->isoFormat('D MMM YYYY'),
             'category'         => CategoryResource::make($this->whenLoaded('category')),
             'publisher'        => PublisherResource::make($this->whenLoaded('publisher')),
