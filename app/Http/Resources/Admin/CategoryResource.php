@@ -23,6 +23,7 @@ class CategoryResource extends JsonResource
             'description' => $this->description,
             'cover'       => $this->cover ? Storage::url($this->cover) : null,
             'created_at'  => Carbon::parse($this->created_at)->isoFormat('D MMM YYYY'),
+            'books'       => BookResource::collection($this->whenLoaded('books')),
         ];
     }
 }

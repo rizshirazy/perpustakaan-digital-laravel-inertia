@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Models\RouteAccess;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin|operator'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::controller(LoanStatisticController::class)->prefix('loan-statistics')->name('loan-statistics.')->group(function () {
         Route::get('/', 'index')->name('index');
