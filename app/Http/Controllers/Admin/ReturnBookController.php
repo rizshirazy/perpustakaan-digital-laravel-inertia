@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\GenerateReturnBookCode;
 use App\Actions\ProcessReturnBookFine;
 use App\Enums\MessageType;
 use App\Enums\ReturnBookCondition;
@@ -20,7 +21,10 @@ use Inertia\Response;
 
 class ReturnBookController extends Controller
 {
-    public function __construct(private ProcessReturnBookFine $processReturnBookFine)
+    public function __construct(
+        private ProcessReturnBookFine $processReturnBookFine,
+        private GenerateReturnBookCode $generateReturnBookCode,
+    )
     {
     }
 
@@ -85,7 +89,7 @@ class ReturnBookController extends Controller
             DB::transaction(function () use ($request, $loan, &$fineData) {
 
                 $return_book = $loan->returnBook()->create([
-                    'return_code' => $this->generateReturnBookCode(),
+                    'return_code' => ($this->generateReturnBookCode)(),
                     'book_id'     => $loan->book->id,
                     'user_id'     => $loan->user->id,
                     'return_date' => Carbon::today(),
@@ -117,26 +121,6 @@ class ReturnBookController extends Controller
 
             return to_route('admin.loans.index');
         }
-    }
-
-    private function generateReturnBookCode(): string
-    {
-        $returnDate = Carbon::now();
-
-        $prefix = 'RN' . $returnDate->format('Ymd');
-
-        $latestReturnBook = ReturnBook::query()
-            ->whereDate('return_date', $returnDate->toDateString())
-            ->latest('return_code')
-            ->first();
-
-        $latestSequence = $latestReturnBook
-            ? (int) substr($latestReturnBook->return_code, -4)
-            : 0;
-
-        $sequence = str_pad($latestSequence + 1, 4, '0', STR_PAD_LEFT);
-
-        return "{$prefix}.{$sequence}";
     }
 
 }

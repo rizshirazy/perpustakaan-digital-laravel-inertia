@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\GenerateLoanCode;
 use App\Enums\MessageType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoanRequest;
@@ -16,6 +17,10 @@ use Inertia\Response;
 
 class LoanController extends Controller
 {
+    public function __construct(private GenerateLoanCode $generateLoanCode)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -91,7 +96,7 @@ class LoanController extends Controller
 
                 // Create loan
                 $loan = Loan::create([
-                    'loan_code' => $this->generateLoanCode(),
+                    'loan_code' => ($this->generateLoanCode)(),
                     'user_id'   => $request->user_id,
                     'book_id'   => $book->id,
                     'loan_date' => now()->toDateString(),
@@ -220,23 +225,4 @@ class LoanController extends Controller
         }
     }
 
-    private function generateLoanCode(): string
-    {
-        $loanDate = Carbon::now();
-
-        $prefix = 'LN' . $loanDate->format('Ymd');
-
-        $latestLoan = Loan::query()
-            ->whereDate('loan_date', $loanDate->toDateString())
-            ->latest('loan_code')
-            ->first();
-
-        $latestSequence = $latestLoan
-            ? (int) substr($latestLoan->loan_code, -4)
-            : 0;
-
-        $sequence = str_pad($latestSequence + 1, 4, '0', STR_PAD_LEFT);
-
-        return "{$prefix}.{$sequence}";
-    }
 }
