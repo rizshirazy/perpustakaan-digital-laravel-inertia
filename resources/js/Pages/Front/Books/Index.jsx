@@ -21,7 +21,7 @@ export default function Index(props) {
                     <div className="flex items-center justify-between">
                         <h2 className="font-semibold leading-relaxed text-foreground">{category.name}</h2>
                         <Button variant="link" asChild>
-                            <Link href="#">Lihat Semua</Link>
+                            <Link href={route('front.categories.show', category.slug)}>Lihat Semua</Link>
                         </Button>
                     </div>
 
