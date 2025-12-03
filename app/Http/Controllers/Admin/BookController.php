@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\GenerateBookCode;
 use App\Enums\BookStatus;
 use App\Enums\MessageType;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,10 @@ use Inertia\Response;
 class BookController extends Controller
 {
     use HasFile;
+
+    public function __construct(private GenerateBookCode $generateBookCode)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
@@ -90,8 +95,10 @@ class BookController extends Controller
     public function store(BookRequest $request): RedirectResponse
     {
         try {
+            $category = Category::find($request->category_id);
+
             Book::create([
-                'book_code'        => $this->bookCode($request->publication_year, $request->category_id),
+                'book_code'        => ($this->generateBookCode)($request->publication_year, $category),
                 'title'            => $title = $request->title,
                 'slug'             => str()->lower(str()->slug($title) . '-' . str()->random(3)),
                 'author'           => $request->author,
@@ -116,30 +123,6 @@ class BookController extends Controller
             return to_route('admin.books.index');
         }
     }
-    private function bookCode(int $publication_year, int $category_id): string
-    {
-        $category = Category::find($category_id);
-
-        $cat = str(substr(preg_replace('/[^A-Za-z]/', '', $category->name), 0, 5))->upper();
-        $book_code_prefix = 'CA' . $publication_year . '.' . $cat . '.';
-
-        $last_book = Book::query()
-            ->where('book_code', 'like', $book_code_prefix . '%')
-            ->orderByRaw("CAST((regexp_matches(book_code, '\d{4}$'))[1] AS INTEGER) DESC")
-            ->first();
-
-        $order = 1;
-
-        if ($last_book) {
-            $last_order = (int) substr($last_book->book_code, -4);
-            $order = $last_order + 1;
-        }
-
-        $ordering = str_pad($order, 4, '0', STR_PAD_LEFT);
-
-        return $book_code_prefix . $ordering;
-    }
-
     /**
      * Display the specified resource.
      */
@@ -176,9 +159,10 @@ class BookController extends Controller
     public function update(Request $request, Book $book): RedirectResponse
     {
         try {
+            $category = Category::find($request->category_id);
             $book->update([
                 'book_code'        => $book->publication_year != $request->publication_year || $book->category->id != $request->category_id
-                    ? $this->bookCode($request->publication_year, $request->category_id)
+                    ? ($this->generateBookCode)($request->publication_year, $category)
                     : $book->book_code,
                 'title'            => $title = $request->title,
                 'slug'             => $title != $book->title ? str()->lower(str()->slug($title) . '-' . str()->random(3)) : $book->slug,
