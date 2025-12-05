@@ -164,9 +164,14 @@ export default function Sidebar({ url, auth }) {
                         title="Kategori"
                         icon={IconCategory}
                     />
-                    <NavLink url="#" active={url.startsWith('/loan')} title="Peminjaman" icon={IconCreditCardPay} />
                     <NavLink
-                        url="#"
+                        url={route('front.loans.index')}
+                        active={url.startsWith('/loans')}
+                        title="Peminjaman"
+                        icon={IconCreditCardPay}
+                    />
+                    <NavLink
+                        url={route('front.return-books.index')}
                         active={url.startsWith('/return-books')}
                         title="Pengembalian"
                         icon={IconCreditCardRefund}

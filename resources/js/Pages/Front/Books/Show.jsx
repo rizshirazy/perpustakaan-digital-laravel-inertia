@@ -1,5 +1,8 @@
 import { Button } from '@/Components/ui/button';
 import AppLayout from '@/Layouts/AppLayout';
+import { flashMessage } from '@/lib/utils';
+import { router } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 export default function Show(props) {
     const { book } = props;
@@ -26,7 +29,26 @@ export default function Show(props) {
 
                     <div className="mt-10 flex">
                         {book.stock.available > 0 ? (
-                            <Button size="lg">Pinjam Sekarang</Button>
+                            <Button
+                                size="lg"
+                                onClick={() =>
+                                    router.post(
+                                        route('front.loans.store', [book.slug]),
+                                        {},
+                                        {
+                                            preserveScroll: true,
+                                            preserveState: true,
+                                            onSuccess: (success) => {
+                                                const flash = flashMessage(success);
+
+                                                if (flash) toast[flash.type](flash.message);
+                                            },
+                                        },
+                                    )
+                                }
+                            >
+                                Pinjam Sekarang
+                            </Button>
                         ) : (
                             <Button size="lg" disabled>
                                 Buku Tidak Tersedia

@@ -3,13 +3,17 @@
 use App\Http\Controllers\BookFrontController;
 use App\Http\Controllers\CategoryFrontController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LoanFrontController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReturnBookFrontController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::redirect('/', 'login');
+
 Route::controller(DashboardController::class)->middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', 'index')->name('dashboard');
+    Route::get('/dashboard', 'index')->name('dashboard');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -29,6 +33,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(CategoryFrontController::class)->middleware('role:member')->prefix('categories')->name('front.categories.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/{category:slug}', 'show')->name('show');
+    });
+
+    Route::controller(LoanFrontController::class)->middleware('role:member')->prefix('loans')->name('front.loans.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{loan:loan_code}/detail', 'show')->name('show');
+        Route::post('/{book:slug}/create', 'store')->name('store');
+    });
+
+    Route::controller(ReturnBookFrontController::class)->middleware('role:member')->prefix('return-books')->name('front.return-books.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/{returnBook:return_code}/detail', 'show')->name('show');
+        Route::post('/{book:slug}/create/{loan:loan_code}', 'store')->name('store');
     });
 });
 

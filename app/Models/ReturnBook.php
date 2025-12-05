@@ -87,7 +87,7 @@ class ReturnBook extends Model
         return $query->where('status', ReturnBookStatus::FINE->value);
     }
 
-    public function scopeCheked(Builder $query): Builder
+    public function scopeChecked(Builder $query): Builder
     {
         return $query->where('status', ReturnBookStatus::CHECKED->value);
     }

@@ -1,3 +1,4 @@
+import CardStat from '@/Components/CardStat';
 import HeaderTitle from '@/Components/HeaderTitle';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
@@ -7,36 +8,30 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { useFilter } from '@/hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { flashMessage, formatToRupiah } from '@/lib/utils';
-import { Link, router } from '@inertiajs/react';
-import { IconArrowsUpDown, IconCreditCardRefund, IconMoneybagMove, IconRefresh } from '@tabler/icons-react';
+import { formatToRupiah } from '@/lib/utils';
+import { Link } from '@inertiajs/react';
+import {
+    IconArrowsUpDown,
+    IconChecklist,
+    IconCreditCardRefund,
+    IconEye,
+    IconMoneybag,
+    IconRefresh,
+} from '@tabler/icons-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 export default function Index(props) {
     const { data: return_books, meta } = props.return_books;
     const [params, setParams] = useState(props.state);
 
     useFilter({
-        route: route('admin.return-books.index'),
+        route: route('front.return-books.index'),
         values: params,
         only: ['return_books'],
     });
 
     const onSortable = (field) => {
         setParams({ ...params, field: field, direction: params.direction === 'asc' ? 'desc' : 'asc' });
-    };
-
-    const onHandleDelete = (id) => {
-        router.delete(route('admin.return_books.destroy', id), {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: (success) => {
-                const flash = flashMessage(success);
-
-                if (flash) toast[flash.type](flash.message);
-            },
-        });
     };
 
     return (
@@ -47,12 +42,39 @@ export default function Index(props) {
                     subtitle={props.page_settings.subtitle}
                     icon={IconCreditCardRefund}
                 />
+            </div>
 
-                {/* <Button variant="orange" size="lg" asChild>
-                    <Link href={route('admin.return-books.create')}>
-                        <IconPlus className="size-4" /> Tambah
-                    </Link>
-                </Button> */}
+            <div className="mb-8 grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+                <CardStat
+                    data={{
+                        title: 'Dikembalikan',
+                        icon: IconCreditCardRefund,
+                        background: 'text-white bg-gradient-to-r from-green-400 via-green-500 to-green-500',
+                        iconClassName: 'text-white',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.page_data.returned}</div>
+                </CardStat>
+                <CardStat
+                    data={{
+                        title: 'Diperiksa',
+                        icon: IconChecklist,
+                        background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
+                        iconClassName: 'text-white',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.page_data.checked}</div>
+                </CardStat>
+                <CardStat
+                    data={{
+                        title: 'Denda',
+                        icon: IconMoneybag,
+                        background: 'text-white bg-gradient-to-r from-rose-400 via-rose-500 to-rose-500',
+                        iconClassName: 'text-white',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.page_data.fine}</div>
+                </CardStat>
             </div>
 
             <Card>
@@ -85,18 +107,7 @@ export default function Index(props) {
                     <Table className="w-full text-sm">
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-16">
-                                    <Button
-                                        variant="ghost"
-                                        className="group inline-flex"
-                                        onClick={() => onSortable('id')}
-                                    >
-                                        #
-                                        <span className="ml-2 flex-none rounded text-muted-foreground">
-                                            <IconArrowsUpDown size={4} />
-                                        </span>
-                                    </Button>
-                                </TableHead>
+                                <TableHead className="w-16">#</TableHead>
                                 <TableHead className="w-44">
                                     <Button
                                         variant="ghost"
@@ -104,30 +115,6 @@ export default function Index(props) {
                                         onClick={() => onSortable('return_code')}
                                     >
                                         Kode Pengembalian
-                                        <span className="ml-2 flex-none rounded text-muted-foreground">
-                                            <IconArrowsUpDown size={4} />
-                                        </span>
-                                    </Button>
-                                </TableHead>
-                                <TableHead className="w-48">
-                                    <Button
-                                        variant="ghost"
-                                        className="group inline-flex"
-                                        onClick={() => onSortable('loan_id')}
-                                    >
-                                        Kode Peminjaman
-                                        <span className="ml-2 flex-none rounded text-muted-foreground">
-                                            <IconArrowsUpDown size={4} />
-                                        </span>
-                                    </Button>
-                                </TableHead>
-                                <TableHead className="w-48">
-                                    <Button
-                                        variant="ghost"
-                                        className="group inline-flex"
-                                        onClick={() => onSortable('user_id')}
-                                    >
-                                        Nama Pengguna
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
                                             <IconArrowsUpDown size={4} />
                                         </span>
@@ -149,9 +136,9 @@ export default function Index(props) {
                                     <Button
                                         variant="ghost"
                                         className="group inline-flex"
-                                        onClick={() => onSortable('due_date')}
+                                        onClick={() => onSortable('return_date')}
                                     >
-                                        Batas Pengembalian
+                                        Tanggal Peminjaman
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
                                             <IconArrowsUpDown size={4} />
                                         </span>
@@ -169,6 +156,8 @@ export default function Index(props) {
                                         </span>
                                     </Button>
                                 </TableHead>
+                                <TableHead>Kondisi</TableHead>
+                                <TableHead>Denda</TableHead>
                                 <TableHead className="min-w-42">
                                     <Button
                                         variant="ghost"
@@ -181,8 +170,6 @@ export default function Index(props) {
                                         </span>
                                     </Button>
                                 </TableHead>
-                                <TableHead>Kondisi</TableHead>
-                                <TableHead>Denda</TableHead>
                                 <TableHead className="w-28">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -191,25 +178,19 @@ export default function Index(props) {
                                 <TableRow key={index}>
                                     <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
                                     <TableCell>{return_book.return_code}</TableCell>
-                                    <TableCell>{return_book.loan.loan_code}</TableCell>
-                                    <TableCell className="whitespace-normal break-words">
-                                        {return_book.user.name}
-                                    </TableCell>
-                                    <TableCell className="whitespace-normal break-words">
-                                        {return_book.book.title}
-                                    </TableCell>
-                                    <TableCell>{return_book.loan.due_date.formatted}</TableCell>
+                                    <TableCell>{return_book.book.title}</TableCell>
+                                    <TableCell>{return_book.loan.loan_date.formatted}</TableCell>
                                     <TableCell>{return_book.return_date.formatted}</TableCell>
-                                    <TableCell>{return_book.status.label}</TableCell>
                                     <TableCell>{return_book.return_book_check?.condition.label}</TableCell>
                                     <TableCell className="text-red-500">
-                                        {return_book.fine ? formatToRupiah(return_book.fine.total_fee) : '-'}
+                                        {formatToRupiah(return_book.fine?.total_fee ?? 0)}
                                     </TableCell>
+                                    <TableCell>{return_book.status.label}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-x-1">
                                             <Button variant="blue" size="sm" asChild>
-                                                <Link href={route('admin.fines.show', return_book.return_code)}>
-                                                    <IconMoneybagMove size="4" />
+                                                <Link href={route('front.return-books.show', return_book.return_code)}>
+                                                    <IconEye size="4" />
                                                 </Link>
                                             </Button>
                                         </div>
