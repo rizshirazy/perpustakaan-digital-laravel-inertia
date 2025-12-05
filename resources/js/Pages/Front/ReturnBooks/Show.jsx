@@ -13,7 +13,7 @@ export default function Show(props) {
     const { return_book } = props;
     const { SUCCESS } = FINEPAYMENTSTATUS;
 
-    const isPaymentSuccessful = return_book.fine.payment_status !== SUCCESS;
+    const isPaymentSuccessful = return_book.fine?.payment_status !== SUCCESS;
 
     return (
         <div className="flex w-full flex-col space-y-4 pb-32">

@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified', 'role:admin|operator'])->prefix('admin')-
         Route::get('/', 'index')->name('index');
         Route::get('/{loan:loan_code}/create', 'create')->name('create');
         Route::post('/{loan:loan_code}/create', 'store')->name('store');
-        Route::put('/{returnBook:return_book_code}/approve', 'approve')->name('approve');
+        Route::put('/{returnBook:return_code}/approve', 'approve')->name('approve');
     });
 
     Route::controller(FineController::class)->prefix('fines')->name('fines.')->group(function () {

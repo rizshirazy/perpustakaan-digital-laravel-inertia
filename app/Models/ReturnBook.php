@@ -57,7 +57,7 @@ class ReturnBook extends Model
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
                 $query->whereAny([
-                    'return_book_code',
+                    'return_code',
                     'status',
                 ], "ILIKE", "%{$search}%");
             })

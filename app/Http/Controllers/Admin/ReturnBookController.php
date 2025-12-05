@@ -24,9 +24,7 @@ class ReturnBookController extends Controller
     public function __construct(
         private ProcessReturnBookFine $processReturnBookFine,
         private GenerateReturnBookCode $generateReturnBookCode,
-    )
-    {
-    }
+    ) {}
 
     public function index(): Response
     {
@@ -48,6 +46,7 @@ class ReturnBookController extends Controller
                 'title'    => 'Pengembalian',
                 'subtitle' => 'Menampilkan semua pengembalian buku yang tercatat pada sistem'
             ],
+            'conditions' => ReturnBookCondition::options(),
             'state' => [
                 'page'   => request()->page ?? 1,
                 'search' => request()->search ?? '',
@@ -123,4 +122,38 @@ class ReturnBookController extends Controller
         }
     }
 
+    public function approve(ReturnBook $returnBook, ReturnBookRequest $request): RedirectResponse
+    {
+        try {
+            $fineData = null;
+
+            DB::transaction(function () use ($returnBook, $request, &$fineData) {
+                $return_book_check = $returnBook->returnBookCheck()->create([
+                    'condition' => $request->condition,
+                    'notes'     => $request->notes,
+                ]);
+
+
+                match ($return_book_check->condition->value) {
+                    ReturnBookCondition::GOOD->value    => $returnBook->book->stock_return_loan(),
+                    ReturnBookCondition::DAMAGED->value => $returnBook->book->stock_damaged(),
+                    ReturnBookCondition::LOST->value    => $returnBook->book->stock_lost(),
+                };
+
+                $daysLate = $returnBook->getDaysLate();
+                $fineData = ($this->processReturnBookFine)($returnBook, $return_book_check, FineSetting::first(), $daysLate);
+            });
+
+            flashMessage(
+                $fineData['message'] ?? 'Transaksi Pengembalian Buku Berhasil',
+                $fineData ? 'error' : 'success'
+            );
+
+            return to_route('admin.return-books.index');
+        } catch (\Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+
+            return to_route('admin.loans.index');
+        }
+    }
 }

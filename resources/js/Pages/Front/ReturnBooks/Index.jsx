@@ -138,18 +138,6 @@ export default function Index(props) {
                                         className="group inline-flex"
                                         onClick={() => onSortable('return_date')}
                                     >
-                                        Tanggal Peminjaman
-                                        <span className="ml-2 flex-none rounded text-muted-foreground">
-                                            <IconArrowsUpDown size={4} />
-                                        </span>
-                                    </Button>
-                                </TableHead>
-                                <TableHead className="min-w-42">
-                                    <Button
-                                        variant="ghost"
-                                        className="group inline-flex"
-                                        onClick={() => onSortable('return_date')}
-                                    >
                                         Tanggal Pengembalian
                                         <span className="ml-2 flex-none rounded text-muted-foreground">
                                             <IconArrowsUpDown size={4} />
@@ -179,11 +167,10 @@ export default function Index(props) {
                                     <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
                                     <TableCell>{return_book.return_code}</TableCell>
                                     <TableCell>{return_book.book.title}</TableCell>
-                                    <TableCell>{return_book.loan.loan_date.formatted}</TableCell>
                                     <TableCell>{return_book.return_date.formatted}</TableCell>
                                     <TableCell>{return_book.return_book_check?.condition.label}</TableCell>
                                     <TableCell className="text-red-500">
-                                        {formatToRupiah(return_book.fine?.total_fee ?? 0)}
+                                        {return_book.fine ? formatToRupiah(return_book.fine.total_fee) : ''}
                                     </TableCell>
                                     <TableCell>{return_book.status.label}</TableCell>
                                     <TableCell>
