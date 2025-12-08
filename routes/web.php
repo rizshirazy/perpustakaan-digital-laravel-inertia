@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookFrontController;
 use App\Http\Controllers\CategoryFrontController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FineFrontController;
 use App\Http\Controllers\LoanFrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReturnBookFrontController;
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{returnBook:return_code}/detail', 'show')->name('show');
         Route::post('/{book:slug}/create/{loan:loan_code}', 'store')->name('store');
     });
+
+    Route::get('fines', FineFrontController::class)->middleware('role:member')->name('front.fines.index');
 });
 
 
