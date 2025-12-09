@@ -1,5 +1,6 @@
 import CardStat from '@/Components/CardStat';
 import HeaderTitle from '@/Components/HeaderTitle';
+import TransactionChart from '@/Components/TransactionChart';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
@@ -76,6 +77,8 @@ export default function Dashboard(props) {
                     </CardStat>
                 </div>
             )}
+
+            <TransactionChart chartData={props.page_data.transaction_chart} />
 
             {auth.role.some((role) => ['member'].includes(role)) && (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
