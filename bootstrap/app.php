@@ -12,12 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust upstream proxies (e.g. ngrok) so forwarded HTTPS scheme is respected.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-        ])->alias([
-            'role' => RoleMiddleware::class,
-        ]);
+        ])
+            ->validateCsrfTokens(except: ['payment/callback'])
+            ->alias([
+                'role' => RoleMiddleware::class,
+            ]);
 
         //
     })

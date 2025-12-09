@@ -6,14 +6,44 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AppLayout from '@/Layouts/AppLayout';
 import { FINEPAYMENTSTATUS, formatToRupiah } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { IconArrowLeft, IconCircleCheck, IconCreditCardRefund } from '@tabler/icons-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 export default function Show(props) {
     const { return_book } = props;
     const { SUCCESS } = FINEPAYMENTSTATUS;
 
     const isPaymentSuccessful = return_book.fine?.payment_status !== SUCCESS;
+
+    const onHandlePayment = async () => {
+        try {
+            const respons = await axios.post(route('payments.create'), {
+                order_id: return_book.return_code,
+                gross_amount: return_book.fine.total_fee,
+                first_name: return_book.user.name,
+                last_name: '',
+                email: return_book.user.email,
+            });
+
+            const snapToken = respons.data.snap_token;
+
+            console.log(respons);
+
+            window.snap.pay(snapToken, {
+                onSuccess: (result) => {
+                    toast['success']('Pemabayaran berhasil');
+                    router.get(route('payments.success'));
+                },
+                onPending: (result) => toast['warning']('Pemabayaran tertunda'),
+                onError: (result) => toast['error']('Kesalahan Pemabayaran'),
+                onClose: (result) => toast['info']('Pemayaran Ditutup'),
+            });
+        } catch (error) {
+            toast['error'](`Kesalaha pembayaran ${error}`);
+        }
+    };
 
     return (
         <div className="flex w-full flex-col space-y-4 pb-32">
@@ -154,7 +184,7 @@ export default function Show(props) {
                                                 </TableCell>
                                                 {isPaymentSuccessful && (
                                                     <TableCell className="align-top">
-                                                        <Button variant="blue" size="sm">
+                                                        <Button variant="blue" size="sm" onClick={onHandlePayment}>
                                                             Bayar
                                                         </Button>
                                                     </TableCell>

@@ -57,7 +57,7 @@ class ReturnBookFrontController extends Controller
 
     public function show(ReturnBook $returnBook): Response
     {
-        $returnBook->load(['loan.book.publisher', 'fine', 'returnBookCheck']);
+        $returnBook->load(['loan.book.publisher', 'fine', 'returnBookCheck', 'user']);
 
         return inertia('Front/ReturnBooks/Show', [
             'page_settings' => [
