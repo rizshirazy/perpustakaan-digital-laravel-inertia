@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RouteAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -23,7 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ])
             ->validateCsrfTokens(except: ['payment/callback'])
             ->alias([
-                'role' => RoleMiddleware::class,
+                'role'         => RoleMiddleware::class,
+                'route_access' => RouteAccessMiddleware::class,
             ]);
 
         //
@@ -32,7 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
             if (in_array($response->getStatusCode(), [401, 403, 404, 429, 503, 500])) {
                 return inertia('ErrorHandling', [
-                    'status' => $response->getStatusCode()
+                    'status' => $response->getStatusCode(),
+                    'error'  => $exception->getMessage(),
                 ])->toResponse($request)->setStatusCode($response->getStatusCode());
             } elseif ($response->getStatusCode() === 419) {
                 return back()->with(['message' => 'Halaman kadaluarsa, silahkan refresh/coba kembali']);

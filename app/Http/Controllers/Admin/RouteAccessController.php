@@ -8,12 +8,18 @@ use App\Http\Requests\Admin\RouteAccessRequest;
 use App\Http\Resources\Admin\RouteAccessResource;
 use App\Models\RouteAccess;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Response;
-use Symfony\Component\Routing\Route;
 
-class RouteAccessController extends Controller
+class RouteAccessController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('password.confirm', except: ['store', 'update'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

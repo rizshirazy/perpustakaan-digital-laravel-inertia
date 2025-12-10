@@ -11,15 +11,20 @@ use App\Http\Resources\Admin\AssignUserResource;
 use App\Http\Resources\Admin\RoleResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 use Inertia\Response;
-use PhpParser\Node\Expr\Assign;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RoleController extends Controller
+class RoleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('password.confirm', except: ['store', 'update', 'updateAssignPermission', 'updateAssignUser'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

@@ -7,12 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Response;
 use Spatie\Permission\Models\Permission;
 
-class PermissionController extends Controller
+class PermissionController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('password.confirm', except: ['store', 'update'])
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

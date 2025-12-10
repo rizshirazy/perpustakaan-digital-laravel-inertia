@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/Components/ui/card';
 import { message } from '@/lib/utils';
 import { Head, Link } from '@inertiajs/react';
 
-export default function ErrorHandling({ status }) {
+export default function ErrorHandling({ status, error }) {
     const errorMessage = message[status];
 
     return (
@@ -17,7 +17,7 @@ export default function ErrorHandling({ status }) {
                             {errorMessage.title}
                         </h1>
                         <p className="mt-6 text-base leading-relaxed text-muted-foreground">
-                            {errorMessage.description}
+                            {status === 403 ? error : errorMessage.description}
                         </p>
                         <div className="mt-10 flex items-start justify-center gap-x-6">
                             <Button variant="orange" asChild>
